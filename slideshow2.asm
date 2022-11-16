@@ -41,9 +41,6 @@ start
 ; second part of the image must be loaded in C0 bank OUT &7F00,&C0 : LOAD"coca.go2",&4000
 	
 
-	LD HL,#00
-	LD (#6420),HL
-
 	CALL asicoff
 	EI
 ;
@@ -51,7 +48,7 @@ start
 ;
 main
 	call nextFile
-	
+
 	LD BC,#7FC5 
 	OUT (C),C
 	LD HL,#4000
@@ -243,7 +240,7 @@ PalettePtr	ld hl,Palettes
 	jp nz, dontResetPalettePtr
 	ld hl,Palettes
 dontResetPalettePtr	ld (PalettePtr+1),hl
-
+	call asicoff
 ret 
 
 ScreenFilename
