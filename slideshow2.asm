@@ -55,14 +55,7 @@ start
 	LD (HL),L
 	LDIR
 ;
-	CALL asicon
-	LD C,#8C; mode 0
-	OUT (C),C
-;  
-	LD HL,palette1
-	LD DE,#6400
-	LD BC,#20
-	LDIR
+
 	LD HL,#00
 	LD (#6420),HL
 
@@ -186,10 +179,10 @@ crtc	LD B,#BC
 	RET 
 
 
-; loadFile routine 
-; HL contains the filename
-; B contains the filename size
-; DE contains the address where to store the file content
+; loadFile routine. 
+; HL contains the filename.
+; B contains the filename size. 
+; DE contains the address where to store the file content.
 loadFile
 	;LD HL,nom
 	;LD B,fin-nom
@@ -231,21 +224,52 @@ selectFilePtr	ld hl,ScreenFilename
 	ld hl,ScreenFilename
 resetScreenPtr	ld (selectFilePtr+1),hl ; store the new file to the next routine call
 
+	call asicon
+	LD C,#8C; mode 0
+	OUT (C),C
+
+
+	; load the palette
+PalettePtr	ld hl,Palettes
+
+	LD DE,#6400
+	LD BC,#20
+	LDIR
+	ld a,(hl)
+	cp #FF
+	jp nz, dontResetPalettePtr
+	ld hl,Palettes
+dontResetPalettePtr	ld (PalettePtr+1),hl
+
 ret 
 
 ScreenFilename
-	DW '1-1.GO', '1-2.GO', '2-1.GO', '2-2.GO', 0 
-PaletteFilename
-	DW palette1,PaletteFilename
+	DW 'DDLM.GO1', 'DDLM.GO2', 'DIA.GO1', 'DIA.GO2', 'HULK.GO1', 'HULK.GO2'
+	DW 'RAAG.GO1', 'RAAG.GO2', 'SKJOK.GO1', 'SKJOK.GO2', 'WWW.GO1', 'WWW.GO2', 0
+Palettes
+	DW DDLMPalette, DIAPalette, HULKPalette, RAAGPalette, SKJOKPalette, WWWPalette,#ff
 filenameSize 
 	DB 6
 
-palette1
-      DB #00,#00,#40,#00,#60,#00,#90,#00
-      DB #B0,#00,#D0,#00,#F0,#00,#22,#02
-      DB #90,#06,#B0,#09,#B2,#09,#D2,#0B
-      DB #F4,#0D,#F6,#0D,#F6,#0F,#F9,#0F
-;
+DDLMPalette
+    db #00, #00, #90, #00, #09, #00, #00, #09, #90, #09, #F0, #09, #09, #09, #F0, #00
+	db #99, #00, #99, #09, #99, #0F, #F9, #0F, #9F, #09, #9F, #0F, #F9, #09, #FF, #0F
+DIAPalette
+	db #00, #00, #00, #00, #03, #00, #33, #03, #F3, #03, #63, #09, #90, #00, #C0, #06
+	db #F3, #09, #F3, #0C, #06, #03, #C9, #09, #0C, #06, #C0, #09, #F9, #0C, #FC, #0C
+HULKPalette
+	db #00, #00, #00, #00, #00, #00, #00, #00, #00, #00, #00, #00, #00, #00, #00, #00
+	db #00, #00, #00, #03, #30, #03, #33, #03, #33, #06, #63, #06, #93, #09, #F9, #0F
+RAAGPalette
+	db #00, #00, #00, #00, #00, #00, #00, #00, #00, #00, #30, #00, #33, #03, #63, #03
+	db #63, #06, #66, #06, #96, #09, #F6, #09, #F6, #0C, #F9, #0C, #F9, #0F, #FC, #0F
+SKJOKPalette
+	db #00, #00, #00, #00, #00, #00, #00, #00, #00, #00, #03, #00, #33, #00, #33, #03
+	db #36, #03, #66, #06, #69, #06, #9C, #09, #CC, #0C, #FC, #0C, #CF, #0C, #FF, #0F
+WWWPalette
+	db #00, #00, #90, #00, #F0, #00, #90, #09, #F0, #09, #F0, #0F, #09, #00, #09, #09
+	db #0F, #09, #99, #00, #99, #09, #9F, #0F, #F9, #09, #F9, #0F, #9F, #09, #FF, #0F
+
 delock
 	LD HL,asic_seq
 	LD BC,#BD11
