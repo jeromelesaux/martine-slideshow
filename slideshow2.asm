@@ -39,6 +39,19 @@ start
 	CALL crtc
 ; first part of the image must be loaded in C5 bank OUT &7F00,&C5 : LOAD"coca.go1",&4000
 ; second part of the image must be loaded in C0 bank OUT &7F00,&C0 : LOAD"coca.go2",&4000
+	
+
+	LD HL,#00
+	LD (#6420),HL
+
+	CALL asicoff
+	EI
+;
+; Boucle principale de la de?mo
+;
+main
+	call nextFile
+	
 	LD BC,#7FC5 
 	OUT (C),C
 	LD HL,#4000
@@ -56,15 +69,6 @@ start
 	LDIR
 ;
 
-	LD HL,#00
-	LD (#6420),HL
-
-	CALL asicoff
-	EI
-;
-; Boucle principale de la de?mo
-;
-main
 	LD B,#F5
 	IN A,(C)
 	RRA
@@ -244,9 +248,9 @@ ret
 
 ScreenFilename
 	DW '1.GO1', '1.GO2', '2.GO1', '2.GO2', '3.GO1', '3.GO2'
-	DW '4.GO1', '4.GO2', '5.GO1', '5.GO2', '6.GO1', '6.GO2', 0
+	DW '4.GO1', '4.GO2', '5.GO1', '5.GO2', 0
 Palettes
-	DW DDLMPalette, DIAPalette, HULKPalette, RAAGPalette, SKJOKPalette, WWWPalette,#ff
+	DW DDLMPalette, DIAPalette, HULKPalette, RAAGPalette, SKJOKPalette,#ff
 filenameSize 
 	DB 5
 
@@ -265,9 +269,6 @@ RAAGPalette
 SKJOKPalette
 	db #00, #00, #00, #00, #00, #00, #00, #00, #00, #00, #03, #00, #33, #00, #33, #03
 	db #36, #03, #66, #06, #69, #06, #9C, #09, #CC, #0C, #FC, #0C, #CF, #0C, #FF, #0F
-WWWPalette
-	db #00, #00, #90, #00, #F0, #00, #90, #09, #F0, #09, #F0, #0F, #09, #00, #09, #09
-	db #0F, #09, #99, #00, #99, #09, #9F, #0F, #F9, #09, #F9, #0F, #9F, #09, #FF, #0F
 
 delock
 	LD HL,asic_seq
