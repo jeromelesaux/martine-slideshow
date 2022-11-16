@@ -43,11 +43,12 @@ start
 
 	CALL asicoff
 	EI
+	call nextFile
 ;
 ; Boucle principale de la de?mo
 ;
 main
-	call nextFile
+	
 
 	LD BC,#7FC5 
 	OUT (C),C
@@ -115,7 +116,9 @@ space	LD BC,#F40E
 	OUT (C),C
 	BIT 7,A
 	JP NZ,main
-;
+	call nextFile
+	jp main
+	
 	DI
 inter  
 
