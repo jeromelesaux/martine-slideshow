@@ -200,22 +200,22 @@ selectFilePtr	ld hl,ScreenFilename
 	ld bc, #7fc5 ; switch bank c5
 	out (c),c 
 	ld de,#4000 ; will store the content file in #4000
-	ld b,6 ; filenameSize
+	ld b,5 ; filenameSize
 	call loadFile
 
 	pop hl
-	ld de,6
+	ld de,5
 	add hl,de ; pointer of the second filename
 
 	push hl
 	ld bc, #7fc0 ; switch bank c0
 	out (c),c
 	ld de,#4000 ; will store the content file in #4000
-	ld b,6  ; filenameSize
+	ld b,5  ; filenameSize
 	call loadFile
 
 	pop hl
-	ld de,6
+	ld de,5
 	add hl,de ; pointer of the next filename
 	xor a 
 	ld b,(hl)
@@ -231,7 +231,6 @@ resetScreenPtr	ld (selectFilePtr+1),hl ; store the new file to the next routine 
 
 	; load the palette
 PalettePtr	ld hl,Palettes
-
 	LD DE,#6400
 	LD BC,#20
 	LDIR
@@ -244,12 +243,12 @@ dontResetPalettePtr	ld (PalettePtr+1),hl
 ret 
 
 ScreenFilename
-	DW 'DDLM.GO1', 'DDLM.GO2', 'DIA.GO1', 'DIA.GO2', 'HULK.GO1', 'HULK.GO2'
-	DW 'RAAG.GO1', 'RAAG.GO2', 'SKJOK.GO1', 'SKJOK.GO2', 'WWW.GO1', 'WWW.GO2', 0
+	DW '1.GO1', '1.GO2', '2.GO1', '2.GO2', '3.GO1', '3.GO2'
+	DW '4.GO1', '4.GO2', '5.GO1', '5.GO2', '6.GO1', '6.GO2', 0
 Palettes
 	DW DDLMPalette, DIAPalette, HULKPalette, RAAGPalette, SKJOKPalette, WWWPalette,#ff
 filenameSize 
-	DB 6
+	DB 5
 
 DDLMPalette
     db #00, #00, #90, #00, #09, #00, #00, #09, #90, #09, #F0, #09, #09, #09, #F0, #00
