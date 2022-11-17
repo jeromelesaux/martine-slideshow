@@ -28,7 +28,6 @@ start
 
 	CALL delock
 
-;
 	LD HL,#0130
 	CALL crtc
 	LD HL,#0232
@@ -37,15 +36,10 @@ start
 	CALL crtc
 	LD HL,#0723
 	CALL crtc
-; first part of the image must be loaded in C5 bank OUT &7F00,&C5 : LOAD"coca.go1",&4000
-; second part of the image must be loaded in C0 bank OUT &7F00,&C0 : LOAD"coca.go2",&4000
-	
-
-	CALL asicoff
 	EI
 	call nextFile
 ;
-; Boucle principale de la de?mo
+; Boucle principale de la demo
 ;
 main
 	
@@ -118,7 +112,8 @@ space	LD BC,#F40E
 	JP NZ,main
 	call nextFile
 	jp main
-	
+; quit the program
+
 	DI
 inter  
 
@@ -183,6 +178,9 @@ crtc	LD B,#BC
 	RET 
 
 
+	
+
+
 ; loadFile routine. 
 ; HL contains the filename.
 ; B contains the filename size. 
@@ -191,20 +189,26 @@ loadFile
 	;LD HL,nom
 	;LD B,fin-nom
 	CALL #bc77
+	brk
 	LD HL,DE
 	CALL #bc83
 	CALL #bc7a
 	RET 
 
+
 ; nextFile routine
 ; 
 nextFile
+; first part of the image must be loaded in C5 bank OUT &7F00,&C5 : LOAD"coca.go1",&4000
+; second part of the image must be loaded in C0 bank OUT &7F00,&C0 : LOAD"coca.go2",&4000
+
+brk
 selectFilePtr	ld hl,ScreenFilename
 	push hl ; pointer of the first filename
 	ld bc, #7fc5 ; switch bank c5
 	out (c),c 
 	ld de,#4000 ; will store the content file in #4000
-	ld b,5 ; filenameSize
+	ld bc,5 ; filenameSize
 	call loadFile
 
 	pop hl
@@ -215,7 +219,7 @@ selectFilePtr	ld hl,ScreenFilename
 	ld bc, #7fc0 ; switch bank c0
 	out (c),c
 	ld de,#4000 ; will store the content file in #4000
-	ld b,5  ; filenameSize
+	ld bc,5  ; filenameSize
 	call loadFile
 
 	pop hl
@@ -273,10 +277,10 @@ SKJOKPalette
 delock
 	LD HL,asic_seq
 	LD BC,#BD11
-	OUTI
+loopDelock	OUTI
 	INC B
 	DEC C
-	Jp NZ,main
+	Jp NZ,loopDelock
 	RET 
 ;
 asic_seq
