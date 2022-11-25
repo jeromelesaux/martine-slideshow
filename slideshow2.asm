@@ -66,7 +66,7 @@ main
 	RRA
 	JR NC,main+2
 
-	CALL asicon
+	call asicon
 ;                  
 ; Premiere partie de l'image en #c000
 ;
@@ -92,7 +92,7 @@ main
 	LD HL,#10
 	LD (#6802),HL; ssa
 ;       
-	CALL asicoff
+	call asicoff
 
 ;
 space	LD BC,#F40E
@@ -109,6 +109,7 @@ space	LD BC,#F40E
 	LD BC,#F782
 	OUT (C),C
 	BIT 7,A
+	brk
 	JP NZ,main
 	call nextFile
 	jp main
@@ -189,7 +190,6 @@ loadFile
 	;LD HL,nom
 	;LD B,fin-nom
 	CALL #bc77
-	brk
 	LD HL,DE
 	CALL #bc83
 	CALL #bc7a
@@ -202,7 +202,7 @@ nextFile
 ; first part of the image must be loaded in C5 bank OUT &7F00,&C5 : LOAD"coca.go1",&4000
 ; second part of the image must be loaded in C0 bank OUT &7F00,&C0 : LOAD"coca.go2",&4000
 
-brk
+	call asicoff
 selectFilePtr	ld hl,ScreenFilename
 	push hl ; pointer of the first filename
 	ld bc, #7fc5 ; switch bank c5
