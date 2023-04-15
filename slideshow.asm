@@ -25,11 +25,6 @@ start
           push de:push hl
 
 	im 1
-;                     
-; initialisation Musique
-;        
-        
-         
 
 	call delock
         
